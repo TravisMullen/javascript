@@ -1,7 +1,6 @@
-var eventUtility = {
-	var doc = document;
-	//cross browser events 
-    addEvent : function(el, type, fn) {
+var utility = {
+
+    addEvent: function(el, type, fn) {
         if (typeof addEventListener !== "undefined") {
             el.addEventListener(type, fn, false);
         } else if (typeof attachEvent !== "undefined") {
@@ -10,8 +9,8 @@ var eventUtility = {
             el["on" + type] = fn;
         }
     },
-    
-    removeEvent : function(el, type, fn) {
+
+    removeEvent: function(el, type, fn) {
         if (typeof removeEventListener !== "undefined") {
             el.removeEventListener(type, fn, false);
         } else if (typeof detachEvent !== "undefined") {
@@ -20,16 +19,16 @@ var eventUtility = {
             el["on" + type] = null;
         }
     },
-    
-    getTarget : function(event) {
+
+    getTarget: function(event) {
         if (typeof event.target !== "undefined") {
             return event.target;
         } else {
             return event.srcElement;
         }
     },
-    
-    preventDefault : function(event) {
+
+    preventDefault: function(event) {
         if (typeof event.preventDefault !== "undefined") {
             event.preventDefault();
         } else {
@@ -37,27 +36,27 @@ var eventUtility = {
         }
     },
     //element attribute detection
-    testSupport : function(el, type, attr) {
-    	var i = doc.createElement(el);
+    attrSupport: function(el, type, attr) {
+        var i = document.createElement(el);
         i.setAttribute(type, attr);
         return i.type === attr;
     },
     //element detection
-    canvasSupport : function() {
-        return doc.createElement('canvas').getContext;
+    canvasSupport: function() {
+        return document.createElement('canvas').getContext;
     },
-    videoSupport : function() {
-        return doc.createElement('video').canPlayType;
+    videoSupport: function() {
+        return document.createElement('video').canPlayType;
     },
     //feature detection
-    geoLocSupport : function() {
+    geoLocSupport: function() {
         return navigator.geolocation;
     },
-    storageSupport : function() {
+    storageSupport: function() {
         try {
-        	return 'localStorage' in window && window.localStorage !== null;        	
+            return 'localStorage' in window && window.localStorage !== null;
         } catch (e) {
-        	return false;
+            return false;
         }
     }
 };
