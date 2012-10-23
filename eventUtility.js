@@ -1,5 +1,5 @@
 var utility = {
-
+    //doc: window.document,
     addEvent: function(el, type, fn) {
         if (typeof addEventListener !== "undefined") {
             el.addEventListener(type, fn, false);
@@ -36,8 +36,12 @@ var utility = {
         }
     },
     //element attribute detection
-    attrSupport: function(el, type, attr) {
+    // define TYPE, ATTR or ELEM
+    testSupport: function(el, attr, type) {
         var i = document.createElement(el);
+        if (type === undefined) {
+            type = "type";
+        }
         i.setAttribute(type, attr);
         return i.type === attr;
     },
