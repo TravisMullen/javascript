@@ -1,5 +1,4 @@
 var utility = {
-    //doc: window.document,
     addEvent: function(el, type, fn) {
         if (typeof addEventListener !== "undefined") {
             el.addEventListener(type, fn, false);
