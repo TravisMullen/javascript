@@ -1,5 +1,5 @@
-var utility = {
-    addEvent: function(el, type, fn) {
+var eventUtility = {
+    addEvent : function(el, type, fn) {
         if (typeof addEventListener !== "undefined") {
             el.addEventListener(type, fn, false);
         } else if (typeof attachEvent !== "undefined") {
@@ -8,8 +8,8 @@ var utility = {
             el["on" + type] = fn;
         }
     },
-
-    removeEvent: function(el, type, fn) {
+    
+    removeEvent : function(el, type, fn) {
         if (typeof removeEventListener !== "undefined") {
             el.removeEventListener(type, fn, false);
         } else if (typeof detachEvent !== "undefined") {
@@ -18,48 +18,28 @@ var utility = {
             el["on" + type] = null;
         }
     },
-
-    getTarget: function(event) {
+    
+    getTarget : function(event) {
         if (typeof event.target !== "undefined") {
             return event.target;
         } else {
             return event.srcElement;
         }
     },
-
-    preventDefault: function(event) {
+    
+    preventDefault : function(event) {
         if (typeof event.preventDefault !== "undefined") {
             event.preventDefault();
         } else {
             event.returnValue = false;
         }
     },
-    //element attribute detection
-    // define TYPE, ATTR or ELEM
-    testSupport: function(el, attr, type) {
-        var i = document.createElement(el);
-        if (type === undefined) {
-            type = "type";
-        }
-        i.setAttribute(type, attr);
-        return i.type === attr;
-    },
-    //element detection
-    canvasSupport: function() {
-        return document.createElement('canvas').getContext;
-    },
-    videoSupport: function() {
-        return document.createElement('video').canPlayType;
-    },
-    //feature detection
-    geoLocSupport: function() {
-        return navigator.geolocation;
-    },
-    storageSupport: function() {
-        try {
-            return 'localStorage' in window && window.localStorage !== null;
-        } catch (e) {
-            return false;
+    
+    getCharCode : function(event) {
+        if (typeof event.charCode === "number") {
+            return event.charCode;
+        } else {
+            return event.keyCode;
         }
     }
 };
