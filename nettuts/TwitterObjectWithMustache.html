@@ -38,20 +38,36 @@
 			this.url = 'http://search.twitter.com/search.json?q=' + config.query + '&callback=?';
 			this.template = config.template;
 			this.container = config.container;
+			this.filter = config.filter;
 
 			this.fetch();
 		},
-
+		
+		/*filter: function() {
+			var self = this;
+			self.tweets = $.grep(self.tweets, function(o, i){;
+				return o.tweet.toLowerCase().indexOf( 'sandy' ) > -1;
+			}, true);
+			//console.log(this.container);
+			//this.tweets[0];
+		},*/
+		
 		attachTemplate: function() {
-			var template = Handlebars.compile( this.template );
-
-			this.container.append( template( this.tweets ) );
+			var self = this,
+			template = Handlebars.compile( self.template ),
+			tweets = self.tweets,
+			filter = self.filter;
+			//filter
+			tweets = $.grep(tweets, function(o, i){;
+				return o.tweet.toLowerCase().indexOf( filter ) > -1;
+			}, true);
+			self.container.append( template( tweets ) );
+			console.log(filter);
 
 		},
 
 		fetch: function() {
 			var self = this;
-
 			$.getJSON( this.url, function( data ) {
 				self.tweets = $.map( data.results, function( tweet ) {
 					return {
@@ -61,8 +77,6 @@
 						url: 'http://twitter.com/' + tweet.from_user + '/status/' + tweet.id_str
 					};
 				});
-
-				// For future lessons, research $.deferred, viewers. :)
 				self.attachTemplate(); 
 			});
 		}
@@ -71,7 +85,8 @@
 	Twitter.init({
 		template: $('#tweets-template').html(),
 		container: $('#biebster-tweets'),
-		query: 'Justin Bieber'
+		query: 'openinphl',
+		filter: 'sandy'
 	});
 
 })();
