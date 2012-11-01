@@ -56,7 +56,7 @@
 			var self = this,
 			template = Handlebars.compile( self.template ),
 			tweets = self.tweets,
-			filter = self.filter;
+			filter = self.filter.toLowerCase();
 			//filter
 			tweets = $.grep(tweets, function(o, i){;
 				return o.tweet.toLowerCase().indexOf( filter ) > -1;
@@ -85,8 +85,8 @@
 	Twitter.init({
 		template: $('#tweets-template').html(),
 		container: $('#biebster-tweets'),
-		query: 'openinphl',
-		filter: 'sandy'
+		query: 'bondedforever',
+		filter: 'MickenzieSue'
 	});
 
 })();
