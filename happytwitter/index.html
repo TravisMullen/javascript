@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>Twitter</title>
+	<style>
+	body { width: 800px; margin: 0 auto; padding: 0; }
+	.wrap { width: 800px; float: left; margin: 0; padding: 0; }
+	#happy-tweets,
+	#sad-tweets { background-color: yellow; display: block; list-style: none; float: left; width: 400px; margin: 0 0; padding: 0; min-height: 400px; }
+	#sad-tweets { background-color: orange; }
+	li { padding-bottom: 1em; margin: 0; padding: 0; }
+	img { float: left; padding-right: 1em; }
+	a { text-decoration: none; color: #333; }
+	
+	</style>
+</head>
+<body>
+<div class="wrap">
+<div id="happy-tweets">
+Happy
+	<!--<script id="happy-template" type="text/x-handlebars-template">
+		{{#each this}}
+		<li>
+			<img src="{{thumb}}" alt="{{author}}">
+			<p><a href="{{url}}">{{tweet}}</a></p>
+		</li>
+		{{/each}}
+	</script>		-->
+</div>
+<!--<div id="sad-tweets">
+Sad
+	<script id="sad-template" type="text/x-handlebars-template">
+		{{#each this}}
+		<li>
+			<img src="{{thumb}}" alt="{{author}}">
+			<p><a href="{{url}}">{{tweet}}</a></p>
+		</li>
+		{{/each}}
+	</script>		
+</div>-->
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script src="http://cloud.github.com/downloads/wycats/handlebars.js/handlebars-1.0.0.beta.6.js"></script>
+
+<script>
+
+(function() {
+
+	var queryPos = "happy",
+		queryNeg = "sad",
+		happyCount = 0,
+		sadCount = 0,
+		url = "",
+		lastPoint = "00:00:00",
+		//url = 'http://search.twitter.com/search.json?q=' + queryPos + '&callback=?';
+	
+		getCount = function (query) {
+			var url = 'http://search.twitter.com/search.json?q=' + query + '&callback=?',
+			totalScore = 0,
+			lastStamp = 0;
+			$.getJSON( url, function( data ) {				
+				//console.log(data);
+				
+					//console.log(data);
+				thisCount = $.map( data.results, function( tweet ) {
+						var ts = tweet.created_at;
+						ts = ts.substring(17, 25);
+						/*if (!lastStamp) {
+														
+						}*/
+						
+					//console.log(tweet);
+					return {
+						// Fri, 02 Nov 2012 13:38:0017 +0000
+						//var dateData = new Date(tweet.created_at);
+						timestamp: ts,
+						//author: tweet.from_user,
+						tweet: tweet.text,
+						//thumb: tweet.profile_image_url,
+						url: 'http://twitter.com/' + tweet.from_user + '/status/' + tweet.id_str,
+						//imeLapse: dateData
+						
+					};
+				});
+				
+				$.each(thisCount, function( i, points ) {
+					len = thisCount.length,
+					pointValue = function(x) {
+						a = parseInt(x.substring(6, 8),10),						
+						b = parseInt(x.substring(3, 5),10),						
+						c = parseInt(x.substring(0, 2),10),
+						calc = function(a,b,c) {
+							return (((c*60) + b)*60) + a;
+						};
+						//remove 3661 cause its pointValue(01:01:01);
+						//return calc(a,b,c) - calc(1,1,1);
+						return calc(a,b,c) - calc(1,1,1);
+					},
+					pointDiff = function(a, b) {
+						if (a === "00:00:00") { 
+							return 1;
+						} if (a === b) {
+							return 10;	
+						}
+						return pointValue(a) - pointValue(b);
+						/*if (a < b) {
+							return pointValue(b) - pointValue(a);
+						} else if (b > a) {
+							//return less cause over 1 day has passed
+							return 1;	
+						} else if (a === b) {
+							return 10;	
+						} else {
+							alert("cannot calculate");		
+							return 1;						
+						}*/
+					},
+					score = function(a) {
+						points = pointDiff(lastPoint,a);
+						lastPoint = a;
+						//console.log(totalScore + " totalScore 1");
+						//console.log(points + " points");
+						totalScore = totalScore + points;
+						//console.log(totalScore + " totalScore 2");
+						return totalScore;
+					};
+						score(points.timestamp);
+					if (i === (len-1)) {
+							//return totalScore;
+							totalScore = totalScore - 15;
+							console.log(totalScore + "inside");
+					};					
+				});
+				wrapper = $("#happy-tweets");
+				if (totalScore <= 100) {
+					wrapper.append("<h2 style=\"color:red;\">"+ query + " : " + totalScore +"<h2>");				
+				} else if (totalScore > 100 && totalScore < 1000) {
+					wrapper.append("<h2 style=\"color:yellow;\">"+ query + " : " + totalScore +"<h2>");	
+				} else {
+					wrapper.append("<h2 style=\"color:green;\">"+ query + " : " + totalScore +"<h2>");
+				};
+				
+			});			
+		};
+			getCount("angry");
+			getCount("sad");
+			getCount("hate");
+			
+			getCount("happy");
+			getCount("love");
+
+
+	/*var Twitter = {
+		init: function( config ) {
+			this.url = 'http://search.twitter.com/search.json?q=' + config.query + '&callback=?';
+			this.template = config.template;
+			this.container = config.container;
+			this.filter = config.filter;
+
+			this.fetch();
+		},
+		*/
+		/*filter: function() {
+			var self = this;
+			self.tweets = $.grep(self.tweets, function(o, i){;
+				return o.tweet.toLowerCase().indexOf( 'sandy' ) > -1;
+			}, true);
+			//console.log(this.container);
+			//this.tweets[0];
+		},*/
+		/*
+		attachTemplate: function() {
+			var self = this,
+			template = Handlebars.compile( self.template ),
+			tweets = self.tweets,
+			filter = self.filter.toLowerCase();
+			//filter
+			tweets = $.grep(tweets, function(o, i){;
+				return o.tweet.toLowerCase().indexOf( filter ) > -1;
+			}, true);
+			self.container.append( template( tweets ) );
+
+		},
+
+		fetch: function() {
+			var self = this;
+			$.getJSON( this.url, function( data ) {				
+				//console.log(data);
+				
+				self.tweets = $.map( data.results, function( tweet ) {
+					return {
+						date: tweet.created_at,
+						//author: tweet.from_user,
+						tweet: tweet.text,
+						//thumb: tweet.profile_image_url,
+						url: 'http://twitter.com/' + tweet.from_user + '/status/' + tweet.id_str
+					};
+				});
+				console.log(self.tweets[0].date);
+				console.log(self.tweets.length);
+				self.attachTemplate(); 
+			});
+		}
+	};
+
+	Twitter.init({
+		template: $('#happy-template').html(),
+		container: $('#happy-tweets'),
+		query: 'happy',
+		query: 'sad',
+		filter: 'MickenzieSue'
+	});
+	
+	Twitter.init({
+		template: $('#sad-template').html(),
+		container: $('#sad-tweets'),
+		query: 'sad',
+		filter: 'MickenzieSue'
+	});
+*/
+})();
+
+</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
