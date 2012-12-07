@@ -1,6 +1,7 @@
 var Contest = {
 	init: function( config ) {
 		this.config = config,
+		//#gm-contest is the ID of the body with the app page
 		this.config.access = $('#gm-contest .access'),
 		this.config.gate = $('#gm-contest .gate'),
 		this.config.body = $('body#gm-contest'),
@@ -45,10 +46,8 @@ $(document).ready(function() {
 	 
 	if (empty($data["page"]["liked"])) {
 	    echo "Contest.init({ gateAction:\"close\" });";
-	    //echo "console.log(\"NO LIKE\");";
 	} else {
 	    echo "Contest.init({ gateAction:\"open\" });";
-	   //echo "console.log(\"LIKED, BITCHES\");";
 	}
 ?>
 });
